@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TAAG ao vivo · M8 · UCALL</title>
+  <link rel="icon" href="/marca/mark-red.svg">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="barra">
+      <img class="logo" src="/marca/logo-white.svg" alt="UCALL">
+      <span class="modulo">Operação TAAG · tempo real</span>
+      <span class="espaco"></span>
+      <span class="estado-vivo" id="estado-vivo"><span class="ponto-vivo branco" aria-hidden="true"></span>A ligar à GoContact…</span>
+    </header>
+    <div class="vivo">
+      <main class="vivo-dados" aria-label="Dados da operação">
+        <div id="aviso"></div>
+        <div class="kpis" id="kpis"></div>
+        <section class="cartao seccao">
+          <div class="cab-sec"><h2 class="t-marca">Filas</h2><span class="pequeno-txt mudo">Em espera: agora · Restantes: hoje, até agora</span></div>
+          <div class="tabela-envolve"><table class="tabela" id="t-filas"></table></div>
+        </section>
+        <section class="cartao seccao">
+          <div class="cab-sec"><h2 class="t-marca">Agentes agora</h2><div class="filtros" id="filtros" role="group" aria-label="Filtrar agentes"></div></div>
+          <div class="tabela-envolve"><table class="tabela" id="t-agentes"></table></div>
+        </section>
+      </main>
+      <aside class="vivo-chat" aria-label="Chat com a IA sobre a operação">
+        <div class="cab"><h2 class="t-marca">Pergunta à IA</h2><span class="pequeno-txt mudo">Lê os dados no momento da pergunta</span></div>
+        <div class="sugestoes" id="sugestoes"></div>
+        <div class="mensagens" id="mensagens" aria-live="polite"></div>
+        <div class="escrever"><div class="caixa">
+          <textarea id="caixa-texto" placeholder="Pergunta sobre a operação de agora. Enter envia." aria-label="Pergunta para a IA"></textarea>
+          <div class="linha entre"><span class="pequeno-txt mudo">Confere sempre na GoContact.</span><button class="prim" id="botao-enviar">Enviar</button></div>
+        </div></div>
+      </aside>
+    </div>
+  </div>
+  <script src="/vendor/marked.umd.js"></script>
+  <script src="/vendor/purify.min.js"></script>
+  <script src="/aovivo.js"></script>
+</body>
+</html>

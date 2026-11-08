@@ -1,0 +1,7 @@
+# Segredos e dados: nunca para o GitHub
+.env
+data/
+config/turmas.json
+
+node_modules/
+scripts/__pycache__/

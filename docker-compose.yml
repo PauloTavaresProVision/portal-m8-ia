@@ -1,0 +1,15 @@
+services:
+  portal-m8:
+    build: .
+    container_name: portal-m8
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - SERVIDOR=1
+      - PORTA=3000
+      - TZ=Africa/Luanda
+    ports:
+      - "${PORTA_HOST:-3000}:3000"
+    volumes:
+      - ./data:/app/data
+      - ./config:/app/config

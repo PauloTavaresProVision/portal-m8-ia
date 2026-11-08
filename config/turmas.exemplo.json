@@ -1,0 +1,90 @@
+{
+  "turmas": [
+    {
+      "id": "teste",
+      "nome": "Turma de teste · Supervisores",
+      "folhaDTP": "Supervisores",
+      "data": "2026-11-09",
+      "inicio": "09:00",
+      "pausaInicio": "11:25",
+      "pausaFim": "11:45",
+      "fim": "13:00",
+      "sala": "Ensaio",
+      "nivel": "supervisores",
+      "codigo": "0000",
+      "participantes": [
+        {
+          "id": "teste-01",
+          "nome": "Formando de teste 1",
+          "categoria": "SUPERVISOR OPERACIONAL",
+          "projecto": "DN",
+          "grupo": 0
+        },
+        {
+          "id": "teste-02",
+          "nome": "Formando de teste 2",
+          "categoria": "SUPERVISOR OPERACIONAL",
+          "projecto": "DN",
+          "grupo": 0
+        },
+        {
+          "id": "teste-03",
+          "nome": "Formando de teste 3",
+          "categoria": "SUPERVISOR OPERACIONAL",
+          "projecto": "DN",
+          "grupo": 0
+        },
+        {
+          "id": "teste-04",
+          "nome": "Formando de teste 4",
+          "categoria": "SUPERVISOR OPERACIONAL",
+          "projecto": "DN",
+          "grupo": 0
+        }
+      ]
+    },
+    {
+      "id": "teste-dir",
+      "nome": "Turma de teste · Directores",
+      "folhaDTP": "Directores",
+      "data": "2026-11-12",
+      "inicio": "09:00",
+      "pausaInicio": "11:25",
+      "pausaFim": "11:45",
+      "fim": "13:00",
+      "sala": "Ensaio",
+      "nivel": "directores",
+      "codigo": "0000",
+      "participantes": [
+        {
+          "id": "teste-dir-01",
+          "nome": "Director de teste 1",
+          "categoria": "DIRECTOR",
+          "projecto": "DN",
+          "grupo": 0
+        },
+        {
+          "id": "teste-dir-02",
+          "nome": "Director de teste 2",
+          "categoria": "DIRECTOR",
+          "projecto": "DN",
+          "grupo": 0
+        },
+        {
+          "id": "teste-dir-03",
+          "nome": "Director de teste 3",
+          "categoria": "DIRECTOR",
+          "projecto": "DN",
+          "grupo": 0
+        },
+        {
+          "id": "teste-dir-04",
+          "nome": "Director de teste 4",
+          "categoria": "DIRECTOR",
+          "projecto": "DN",
+          "grupo": 0
+        }
+      ]
+    }
+  ]
+}
