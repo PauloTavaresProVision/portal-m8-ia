@@ -181,20 +181,42 @@ function detectarDadosPessoais(texto, anexosTexto) {
 
 // ---------------------------------------------------------------- app
 const app = express();
-// Online (servidor): com SENHA_SALA no .env, o browser pede uma palavra-passe antes de abrir o portal.
+app.use(express.json({ limit: "15mb" }));
+// Online (servidor): com SENHA_SALA no .env, o portal abre com o ecrã «Palavra-passe da sala» (/entrar).
+// Quem acerta fica com um cookie durante 30 dias. O formador entra no painel só com o PIN.
 // Na rede da sala (sem SENHA_SALA) fica tudo como antes.
 const SENHA_SALA = process.env.SENHA_SALA || "";
 if (SENHA_SALA) {
-  const esperado = Buffer.from(SENHA_SALA);
+  app.set("trust proxy", true);
+  const FICHA = crypto.createHmac("sha256", SENHA_SALA).update("portal-m8-sala").digest("hex");
+  const igual = (a, b) => { const x = Buffer.from(String(a || "")), y = Buffer.from(String(b || "")); return x.length === y.length && crypto.timingSafeEqual(x, y); };
+  const fichaDe = (req) => (req.get("cookie") || "").split(";").map((s) => s.trim()).find((s) => s.startsWith("m8_sala="))?.slice(8);
+  const darFicha = (req, res) => res.append("Set-Cookie", `m8_sala=${FICHA}; Path=/; Max-Age=2592000; HttpOnly; SameSite=Lax${req.secure ? "; Secure" : ""}`);
+  const falhas = new Map(); // por IP: tentativas erradas nos últimos 15 min
+  app.post("/api/entrar", (req, res) => {
+    const ip = req.get("cf-connecting-ip") || req.ip, agora = Date.now();
+    const f = falhas.get(ip);
+    if (f && agora - f.desde > 15 * 60_000) falhas.delete(ip);
+    if ((falhas.get(ip)?.n || 0) >= 30) return erro(res, 429, "Demasiadas tentativas. Espera uns minutos.");
+    if (!igual(String(req.body?.senha || "").trim(), SENHA_SALA)) {
+      const g = falhas.get(ip) || { n: 0, desde: agora }; g.n++; falhas.set(ip, g);
+      return setTimeout(() => erro(res, 401, "Palavra-passe errada."), 400);
+    }
+    darFicha(req, res);
+    res.json({ ok: true });
+  });
+  const PAGINAS = new Set(["/", "/index.html", "/aovivo", "/aovivo.html"]);
   app.use((req, res, next) => {
-    const [tipo, valor] = (req.get("authorization") || "").split(" ");
-    const senha = tipo === "Basic" && valor ? Buffer.from(valor, "base64").toString().split(":").slice(1).join(":") : "";
-    const dada = Buffer.from(senha);
-    if (dada.length === esperado.length && crypto.timingSafeEqual(dada, esperado)) return next();
-    res.set("WWW-Authenticate", 'Basic realm="Portal M8", charset="UTF-8"').status(401).send("Palavra-passe da sala necessária.");
+    if (igual(fichaDe(req), FICHA)) return next();
+    if (req.path.startsWith("/api/")) {
+      if (req.path === "/api/config") return next();
+      if (req.get("x-pin") && igual(req.get("x-pin"), PIN)) { darFicha(req, res); return next(); } // o formador (PIN) também fica com o cookie
+      return res.set("x-sala", "1").status(401).json({ erro: "Escreve a palavra-passe da sala." });
+    }
+    if (PAGINAS.has(req.path)) return res.redirect(302, `/entrar?volta=${encodeURIComponent(req.originalUrl)}`);
+    next(); // estilos, scripts, logótipos e ficheiros dos exercícios (estão no GitHub); o painel tem o PIN
   });
 }
-app.use(express.json({ limit: "15mb" }));
 app.use(express.static(path.join(AQUI, "public"), { extensions: ["html"] }));
 const vendor = {
   "marked.umd.js": "node_modules/marked/lib/marked.umd.js",

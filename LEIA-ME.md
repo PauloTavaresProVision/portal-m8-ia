@@ -83,6 +83,6 @@ O portal escolhe sozinho os exercícios certos pela turma. \*O PPT dos Superviso
 ## 7. Online (servidor com Docker)
 
 - `docker compose up -d --build` arranca o portal na porta 3000 e volta a arrancar sozinho se o servidor reiniciar.
-- O `.env` do servidor é igual ao daqui, mais `SENHA_SALA`: o browser pede essa palavra-passe antes de abrir o portal (qualquer nome de utilizador). Sem ela, qualquer pessoa com o endereço entra.
+- O `.env` do servidor é igual ao daqui, mais `SENHA_SALA`: o portal abre com o ecrã «Palavra-passe da sala» (cada PC escreve-a uma vez; fica 30 dias). O painel continua só com o PIN. Sem `SENHA_SALA`, qualquer pessoa com o endereço entra.
 - `config/turmas.json` (os nomes) copia-se à parte para o servidor; `data/` guarda presenças, conversas e entregas.
 - Actualizar: `git pull` e outra vez `docker compose up -d --build`.

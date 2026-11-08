@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Entrar · M8 · UCALL</title>
+  <link rel="icon" href="/marca/mark-red.svg">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="login">
+    <div class="cartao">
+      <img class="logo" src="/marca/logo-red.svg" alt="UCALL">
+      <h1 class="t-marca" style="font-size:28px;margin-bottom:6px">Portal da formação</h1>
+      <p class="mudo" style="margin:0 0 16px">M8 · IA na Liderança</p>
+      <input type="password" id="senha" placeholder="Palavra-passe da sala" aria-label="Palavra-passe da sala" autocomplete="off">
+      <div class="erro-txt" id="msg" role="alert"></div>
+      <button class="prim grande" id="ir" style="width:100%;margin-top:8px">Entrar</button>
+    </div>
+  </div>
+  <script>
+    (() => {
+      const senha = document.getElementById("senha"), msg = document.getElementById("msg"), botao = document.getElementById("ir");
+      const v = new URLSearchParams(location.search).get("volta") || "/";
+      const destino = v.startsWith("/") && !v.startsWith("//") ? v : "/";
+      async function ir() {
+        if (!senha.value.trim()) { msg.textContent = "Escreve a palavra-passe."; return senha.focus(); }
+        botao.disabled = true; msg.textContent = "";
+        try {
+          const r = await fetch("/api/entrar", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ senha: senha.value }) });
+          if (r.ok || r.status === 404) return location.replace(destino); // 404: o portal não tem palavra-passe
+          msg.textContent = (await r.json().catch(() => ({}))).erro || "Não foi possível entrar.";
+        } catch { msg.textContent = "Sem ligação ao portal. Tenta outra vez."; }
+        botao.disabled = false; senha.select(); senha.focus();
+      }
+      botao.addEventListener("click", ir);
+      senha.addEventListener("keydown", (e) => { if (e.key === "Enter") ir(); });
+      senha.focus();
+    })();
+  </script>
+</body>
+</html>
