@@ -11,6 +11,15 @@
     PASSOS = C.passos;
     passoPorId = Object.fromEntries(PASSOS.map((p) => [p.id, p]));
   }
+  // Perfil do formando (ex.: «limpeza»): troca os textos e os ficheiros dos passos que a versão tiver.
+  function usarPerfil(perfil) {
+    const v = perfil && C.perfis?.[perfil];
+    if (!v) return;
+    C = { ...C, ficheiros: { ...C.ficheiros, ...(v.ficheiros || {}) },
+      passos: C.passos.map((p) => (v.passos?.[p.id] ? { ...p, ...v.passos[p.id] } : p)) };
+    PASSOS = C.passos;
+    passoPorId = Object.fromEntries(PASSOS.map((p) => [p.id, p]));
+  }
   usarNivel("supervisores");
   const S = { cfg: {}, sessao: null, turma: null, pessoa: null, est: null, passoChat: "inicio",
     mensagens: [], anexos: [], aEnviar: false, timer: null };
@@ -162,6 +171,8 @@
 
   // ------------------------------------------------------------ ecrã de trabalho
   async function abrirApp() {
+    usarNivel(S.turma.nivel);
+    usarPerfil(S.pessoa?.perfil);
     try { S.est = await api("GET", "/api/estado"); }
     catch (e) {
       if (e.status === 401) { guardar("m8.pessoa", null); S.pessoa = null; return ecraEntrada(); }
@@ -251,7 +262,7 @@
       const cor = { Usar: "usar", Validar: "validar", Proteger: "proteger", Decidir: "usar", Governar: "proteger", Medir: "validar",
         "Relatório": "usar", Alertas: "proteger", Pessoas: "validar", Rotina: "usar" }[p.bloco];
       blocos.push(h("div", { class: `cartao ex-cab bloco-cor ${cor}` },
-        h("p", { class: "sobre" }, `Exercício ${p.n} de 4 · ${p.bloco}`), h("h2", { class: "t-marca" }, p.titulo), h("p", { style: "margin:0" }, p.texto),
+        h("p", { class: "sobre" }, `Exercício ${p.n} de ${PASSOS.filter((x) => x.tipo === "exercicio").length} · ${p.bloco}`), h("h2", { class: "t-marca" }, p.titulo), h("p", { style: "margin:0" }, p.texto),
         p.diferenca ? h("p", { class: "diferenca" }, h("b", {}, "A diferença: "), p.diferenca) : ""));
       // Passos com botões próprios (juntar o ficheiro, ver o exemplo, abrir o Excel) em cada linha.
       if (p.passos.some((x) => typeof x !== "string")) {

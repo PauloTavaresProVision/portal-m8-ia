@@ -50,7 +50,12 @@ const PUBLICO = {
   supervisores: "supervisores de contact center",
   directores: "directores, directores-gerais adjuntos (DGAs) e membros da Comissão Executiva de uma empresa de contact center",
 };
-const systemPrompt = (turma, passo) => `És o assistente de IA da formação «M8 · IA na Liderança» da Academia UCALL, em Luanda. Falas com ${PUBLICO[turma.nivel] || PUBLICO.supervisores} durante uma sessão prática.
+// Perfil de um formando que não é de contact center (vê a versão dos exercícios da sua área).
+const perfilDe = (p) => p?.perfil || (/limpeza/i.test(p?.categoria || "") ? "limpeza" : null);
+const PUBLICO_PERFIL = {
+  limpeza: "um supervisor da equipa de limpeza da Direcção de Logística e Património, numa turma de supervisores de contact center (os ficheiros dele são de uma equipa de limpeza)",
+};
+const systemPrompt = (turma, passo, pessoa) => `És o assistente de IA da formação «M8 · IA na Liderança» da Academia UCALL, em Luanda. Falas com ${PUBLICO_PERFIL[perfilDe(pessoa)] || PUBLICO[turma.nivel] || PUBLICO.supervisores} durante uma sessão prática.
 
 Como respondes:
 - Em português europeu (norma usada em Angola), claro, directo e sem floreados. Começa logo pela resposta.
@@ -262,7 +267,7 @@ app.get("/api/config", (req, res) => res.json({ demo: MODO_DEMO, modelo: MODELO 
 app.get("/api/sessao", (req, res) => {
   const t = turmaActiva();
   const est = estado(t.id).obj;
-  res.json({ turma: dadosTurma(t), participantes: t.participantes.map((p) => ({ id: p.id, nome: p.nome, presente: !!est.presencas[p.id]?.entrada })) });
+  res.json({ turma: dadosTurma(t), participantes: t.participantes.map((p) => ({ id: p.id, nome: p.nome, perfil: perfilDe(p), presente: !!est.presencas[p.id]?.entrada })) });
 });
 
 app.get("/api/estado", formando, (req, res) => {
@@ -390,7 +395,7 @@ app.post("/api/chat", formandoOuFormador, async (req, res) => {
         fallbacks: "default",
         cache_control: { type: "ephemeral" },
         output_config: { effort: ESFORCO },
-        system: systemPrompt(req.turma, passo),
+        system: systemPrompt(req.turma, passo, req.pessoa),
         messages: [...historico, msgEnviada],
       });
       stream.on("text", (d) => enviar({ t: "delta", v: d }));
