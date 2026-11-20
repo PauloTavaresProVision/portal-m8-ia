@@ -4,13 +4,18 @@
   "use strict";
   // Conteúdos por nível (public/conteudos-*.js); escolhidos pela turma activa.
   const NIVEIS = window.CONTEUDOS_NIVEIS;
-  let PASSOS, passoPorId;
+  let PASSOS, passoPorId, ENTREGAS;
   function usarNivel(nivel) {
     PASSOS = (NIVEIS[nivel] || NIVEIS.supervisores).passos;
     passoPorId = Object.fromEntries(PASSOS.map((p) => [p.id, p]));
+    // Os exercícios do nível + o compromisso (Supervisores: 1, 2, 3, C).
+    ENTREGAS = [...PASSOS.filter((p) => p.tipo === "exercicio").map((p) => [p.id, String(p.n)]), ["compromisso", "C"]];
   }
   usarNivel("supervisores");
-  const ENTREGAS = [["ex1", "1"], ["ex2", "2"], ["ex3", "3"], ["ex4", "4"], ["compromisso", "C"]];
+  const regraParticipacao = () => {
+    const n = ENTREGAS.length;
+    return `${n} = 4 · ${n - 1} = 3 · ${n - 2 > 2 ? `2–${n - 2}` : "2"} = 2 · 0–1 = 1`;
+  };
   const S = { pin: null, d: null, timer: null };
 
   // ------------------------------------------------------------ utilitários
@@ -131,7 +136,7 @@
       h("div", { class: "cartao" }, h("div", { class: "tabela-envolve" }, tabela(d))),
       h("p", { class: "regras" },
         `Assiduidade: 1 + um ponto por momento a horas (entrada até ${somar(t.inicio, 10)}, regresso até ${somar(t.pausaFim, 5)}, saída a partir de ${somar(t.fim, -15)}). `,
-        "Participação: entregas feitas (5 = 4 · 4 = 3 · 2–3 = 2 · 0–1 = 1). Escolher 1–4 à mão substitui o automático. Assertividade: dada por ti. ",
+        `Participação: entregas feitas (${regraParticipacao()}). Escolher 1–4 à mão substitui o automático. Assertividade: dada por ti. `,
         "Nota = média × 25; aprovado a partir de 75%. ",
         d.demo ? "" : `Modelo: ${d.modelo} · tokens: ${d.tokens.entrada.toLocaleString("pt-PT")} entrada / ${d.tokens.saida.toLocaleString("pt-PT")} saída.`));
   }

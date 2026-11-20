@@ -38,7 +38,9 @@ const turmaPorId = Object.fromEntries(TURMAS.map((t) => [t.id, t]));
 
 // Passos da sessão (têm de bater com public/conteudos-*.js; "aovivo" só existe nos Supervisores)
 const PASSOS = ["inicio", "ex1", "ex2", "ex3", "pausa", "ex4", "aovivo", "compromisso"];
-const ENTREGAS = ["ex1", "ex2", "ex3", "ex4"]; // + compromisso = 5 entregas
+// Exercícios que contam como entrega, por nível (+ o compromisso). Supervisores: 3 exercícios.
+const ENTREGAS_NIVEL = { supervisores: ["ex1", "ex2", "ex3"], directores: ["ex1", "ex2", "ex3", "ex4"] };
+const entregasDe = (turma) => ENTREGAS_NIVEL[turma?.nivel] || ENTREGAS_NIVEL.directores;
 const PASSOS_CHAT = ["inicio", "ex1", "ex2", "ex3", "ex4", "aovivo", "compromisso"];
 
 const client = MODO_DEMO ? null : new Anthropic();
@@ -121,19 +123,20 @@ function pontuacaoAssiduidade(turma, p) {
   if (p.saida && minutos(horaLocal(p.saida)) >= minutos(turma.fim) - 15) ok++;
   return 1 + ok;
 }
-function entregasFeitas(est, pid) {
+function entregasFeitas(turma, est, pid) {
   const e = est.entregas[pid] || {};
-  return [...ENTREGAS.filter((k) => e[k]), ...(est.compromissos[pid] ? ["compromisso"] : [])];
+  return [...entregasDe(turma).filter((k) => e[k]), ...(est.compromissos[pid] ? ["compromisso"] : [])];
 }
-function pontuacaoParticipacao(est, pid) {
+// Todas as entregas = 4; menos uma = 3; 2 ou mais = 2; 0 ou 1 = 1.
+function pontuacaoParticipacao(turma, est, pid) {
   if (!est.presencas[pid]?.entrada) return null;
-  const n = entregasFeitas(est, pid).length;
-  return n >= 5 ? 4 : n === 4 ? 3 : n >= 2 ? 2 : 1;
+  const n = entregasFeitas(turma, est, pid).length, total = entregasDe(turma).length + 1;
+  return n >= total ? 4 : n === total - 1 ? 3 : n >= 2 ? 2 : 1;
 }
 function avaliacaoDe(turma, est, pid) {
   const av = est.avaliacao[pid] || {};
   const assAuto = pontuacaoAssiduidade(turma, est.presencas[pid]);
-  const parAuto = pontuacaoParticipacao(est, pid);
+  const parAuto = pontuacaoParticipacao(turma, est, pid);
   const assiduidade = av.assiduidade ?? assAuto;
   const participacao = av.participacao ?? parAuto;
   const assertividade = av.assertividade ?? null;
@@ -290,7 +293,7 @@ app.post("/api/presenca", formando, (req, res) => {
 
 app.post("/api/entrega", formando, (req, res) => {
   const { passo, texto } = req.body;
-  if (!ENTREGAS.includes(passo)) return erro(res, 400, "Exercício inválido.");
+  if (!entregasDe(req.turma).includes(passo)) return erro(res, 400, "Exercício inválido.");
   if (!texto || !String(texto).trim()) return erro(res, 400, "Escreve ou cola a tua resposta primeiro.");
   (req.est.entregas[req.pessoa.id] ||= {})[passo] = { texto: String(texto).slice(0, 20000), ts: new Date().toISOString() };
   marcar(req.entry);
@@ -582,7 +585,7 @@ app.get("/api/painel", formador, (req, res) => {
     return {
       id: p.id, nome: p.nome, categoria: p.categoria,
       presenca: { entrada: pr.entrada ? horaLocal(pr.entrada) : null, regresso: pr.regresso ? horaLocal(pr.regresso) : null, saida: pr.saida ? horaLocal(pr.saida) : null },
-      entregas: entregasFeitas(est, p.id),
+      entregas: entregasFeitas(turma, est, p.id),
       pii: est.eventosPii.filter((e) => e.pid === p.id).length,
       mensagens: est.uso[p.id]?.mensagens || 0,
       avaliacao: avaliacaoDe(turma, est, p.id),
@@ -659,7 +662,7 @@ app.get("/api/painel/exportar", formador, (req, res) => {
   const { turma, est } = req;
   const linhas = turma.participantes.map((p) => {
     const pr = est.presencas[p.id] || {};
-    return { pessoa: p, avaliacao: avaliacaoDe(turma, est, p.id), entregas: entregasFeitas(est, p.id),
+    return { pessoa: p, avaliacao: avaliacaoDe(turma, est, p.id), entregas: entregasFeitas(turma, est, p.id),
       presenca: { entrada: pr.entrada ? horaLocal(pr.entrada) : "", regresso: pr.regresso ? horaLocal(pr.regresso) : "", saida: pr.saida ? horaLocal(pr.saida) : "" },
       compromisso: est.compromissos[p.id] || null, textos: est.entregas[p.id] || {} };
   });

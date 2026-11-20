@@ -1,6 +1,6 @@
 // Conteúdos do M8 · IA na Liderança · Supervisores.
-// O dia-a-dia do supervisor: ler os relatórios da GoContact, dar alertas, decidir sobre pessoas
-// e transformar o que se faz todas as manhãs num pedido que se repete. No fim, a operação ao vivo.
+// O dia-a-dia do supervisor: ler os relatórios da GoContact, dar alertas e decidir sobre pessoas.
+// No fim, a operação ao vivo. (O antigo Ex. 4, «O pedido de todas as manhãs», saiu por falta de tempo.)
 // Cada passo tem o seu botão no ecrã: juntar o ficheiro, ver o exemplo, abrir o Excel.
 window.CONTEUDOS_NIVEIS = window.CONTEUDOS_NIVEIS || {};
 window.CONTEUDOS_NIVEIS.supervisores = {
@@ -10,7 +10,6 @@ window.CONTEUDOS_NIVEIS.supervisores = {
     hora: { nome: "Chamadas por hora · sexta 06/11", botao: "Abrir o Excel", juntar: "Juntar o relatório", ficheiro: "M8_Sup_1_Chamadas_por_hora.xlsx" },
     pausas: { nome: "Logins e pausas · sexta 06/11", botao: "Abrir o Excel", juntar: "Juntar o relatório", ficheiro: "M8_Sup_2_Logins_e_pausas.xlsx" },
     agentes: { nome: "Indicadores por agente · semana 02–06/11", botao: "Abrir o Excel", juntar: "Juntar os indicadores", ficheiro: "M8_Sup_3_Indicadores_por_agente.xlsx" },
-    dia: { nome: "Relatórios de quinta 05/11", botao: "Abrir o Excel", juntar: "Juntar os relatórios de quinta", ficheiro: "M8_Sup_4_Relatorios_quinta.xlsx" },
   },
 
   // Ordem da sessão. "exercicio" conta para a avaliação (entrega).
@@ -77,21 +76,6 @@ window.CONTEUDOS_NIVEIS.supervisores = {
       texto: "Quando voltares, carrega em «Voltei da pausa».",
     },
     {
-      id: "ex4", tipo: "exercicio", n: 4, etiqueta: "Ex. 4", bloco: "Rotina", titulo: "O pedido de todas as manhãs",
-      texto: "O SLA, os alertas e os agentes: é o que fazes todas as manhãs. Escreve um só pedido que sirva para todos os dias e testa-o com os relatórios de quinta-feira (05/11).",
-      diferenca: "Um pedido bem escrito é uma rotina: escreves uma vez e usas todos os dias. Só muda o ficheiro.",
-      passos: [
-        { texto: "Escreve o teu pedido de todas as manhãs: o que a IA tem de verificar, as regras e como queres a resposta.", exemplo: 0 },
-        { texto: "Junta os relatórios de quinta e envia o teu pedido.", juntar: "dia" },
-        { texto: "Confere no Excel. Faltou alguma coisa? Melhora o pedido, carrega em «Começar de novo» e testa outra vez.", abrir: "dia" },
-      ],
-      pedidos: [
-        { texto: "És o meu assistente de supervisão. Todas as manhãs dou-te os relatórios do dia anterior da GoContact: chamadas por hora, logins, pausas, regras das pausas e indicadores por agente. Faz sempre isto, por esta ordem:\n1. SLA 20 s e abandono do dia, por fila e no total (atendidas até 20 s ÷ oferecidas), e as horas abaixo da meta.\n2. Alertas de pessoas: logins com mais de 5 minutos de atraso, saídas antes da hora, pausas acima do máximo ou fora da janela.\n3. Agentes a acompanhar: muitas chamadas com menos de 30 s, desligadas pelo agente, pós-chamada alto e chamadas não atendidas.\n4. As 3 acções para hoje.\nRegras: usa só os dados dos ficheiros, mostra as contas, no máximo 15 linhas e uma tabela." },
-      ],
-      abrir: ["dia"],
-      entrega: "Cola aqui o teu pedido final: o texto que vais usar todas as manhãs.",
-    },
-    {
       id: "aovivo", tipo: "aovivo", etiqueta: "Ao vivo", titulo: "A operação TAAG agora",
       texto: "Até aqui deste ficheiros à IA. E se ela fosse buscar os dados sozinha à GoContact, em tempo real?",
       passos: [
@@ -107,7 +91,7 @@ window.CONTEUDOS_NIVEIS.supervisores = {
       id: "compromisso", tipo: "compromisso", etiqueta: "Compromisso", titulo: "O meu compromisso",
       texto: "Uma acção concreta para aplicar na tua equipa nas próximas 4 semanas.",
       campos: [
-        { id: "oque", rotulo: "O que vou fazer", exemplo: "Usar o meu pedido de todas as manhãs com os relatórios da GoContact do dia anterior, antes da reunião de turno." },
+        { id: "oque", rotulo: "O que vou fazer", exemplo: "Todas as manhãs, antes da reunião de turno, pedir à IA o SLA por hora e os alertas das pausas do dia anterior, a partir dos relatórios da GoContact." },
         { id: "quando", rotulo: "Até quando", exemplo: "Todos os dias úteis, durante 4 semanas, até 7 de Dezembro." },
         { id: "evidencia", rotulo: "Como vou mostrar que fiz", exemplo: "Guardo a resposta da IA de cada manhã e marco o que confirmei no Excel e o que decidi." },
       ],
