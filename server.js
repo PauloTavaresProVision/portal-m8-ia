@@ -54,6 +54,7 @@ const PUBLICO = {
 const perfilDe = (p) => p?.perfil || (/limpeza/i.test(p?.categoria || "") ? "limpeza" : null);
 const PUBLICO_PERFIL = {
   limpeza: "um supervisor da equipa de limpeza da Direcção de Logística e Património, numa turma de supervisores de contact center (os ficheiros dele são de uma equipa de limpeza)",
+  dlp: "um supervisor da Direcção de Logística e Património, numa turma de supervisores de contact center. Coordena a equipa de limpeza, controla os consumíveis e os produtos, faz os relatórios de consumo, identifica as necessidades de reposição e acompanha a higiene e segurança no trabalho (os ficheiros dele são de consumíveis, stock e de uma equipa de limpeza)",
 };
 const systemPrompt = (turma, passo, pessoa) => `És o assistente de IA da formação «M8 · IA na Liderança» da Academia UCALL, em Luanda. Falas com ${PUBLICO_PERFIL[perfilDe(pessoa)] || PUBLICO[turma.nivel] || PUBLICO.supervisores} durante uma sessão prática.
 

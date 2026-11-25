@@ -101,6 +101,7 @@ window.CONTEUDOS_NIVEIS.supervisores = {
 
   // Versões por perfil: o formando com este perfil vê estes textos e ficheiros no lugar dos de contact center.
   // «limpeza»: supervisores de limpeza da Direcção de Logística e Património (categoria com «LIMPEZA»).
+  // «dlp»: supervisor da logística com consumíveis e reposição (só com "perfil": "dlp" no turmas.json).
   // Mesmos exercícios, mesmas lições e mesmo tempo: o debrief é comum a toda a turma.
   perfis: {
     limpeza: {
@@ -172,6 +173,84 @@ window.CONTEUDOS_NIVEIS.supervisores = {
             { id: "oque", rotulo: "O que vou fazer", exemplo: "Todas as manhãs, antes de distribuir as zonas, pedir à IA o cumprimento do plano por hora e os alertas das picagens e pausas do dia anterior." },
             { id: "quando", rotulo: "Até quando", exemplo: "Todos os dias úteis, durante as próximas 4 semanas." },
             { id: "evidencia", rotulo: "Como vou mostrar que fiz", exemplo: "Guardo a resposta da IA de cada manhã e marco o que confirmei no Excel e o que decidi." },
+          ],
+        },
+      },
+    },
+
+    // «dlp»: supervisor da logística (DLP) que coordena a equipa de limpeza, controla os consumíveis,
+    // faz os relatórios de consumo e a reposição e acompanha a higiene e segurança (campo "perfil": "dlp").
+    dlp: {
+      ficheiros: {
+        dconsumo: { nome: "Relatório de consumo · semana 16–20/11", botao: "Abrir o Excel", juntar: "Juntar o relatório", ficheiro: "M8_Sup_D1_Relatorio_de_consumo.xlsx" },
+        dstock: { nome: "Stock e reposição · segunda 23/11", botao: "Abrir o Excel", juntar: "Juntar o relatório", ficheiro: "M8_Sup_D2_Stock_e_reposicao.xlsx" },
+        dcolab: { nome: "Indicadores por colaborador · semana 16–20/11", botao: "Abrir o Excel", juntar: "Juntar os indicadores", ficheiro: "M8_Sup_D3_Indicadores_por_colaborador.xlsx" },
+      },
+      passos: {
+        inicio: {
+          texto: "Hoje a IA faz contigo o que fazes todos os dias na logística: o relatório de consumo, o controlo do stock e da reposição e o acompanhamento da equipa. Os exercícios são os mesmos da turma, com os dados da tua área. No fim, vês com o grupo a operação TAAG ao vivo.",
+          passos: [
+            "Ouve o formador: ele diz quando começa cada exercício.",
+            "Em cada exercício escreves tu o pedido. Se ficares parado, há um exemplo.",
+            "Os ficheiros são fictícios: consumíveis, stock e uma equipa de limpeza. Confere sempre o que a IA diz.",
+          ],
+        },
+        ex1: {
+          titulo: "O relatório de consumo",
+          texto: "Na semana passada (16 a 20/11) os consumíveis custaram mais do que o previsto. O teu chefe na DLP quer saber porquê. Tens o relatório de consumo por produto.",
+          diferenca: "Todas as semanas fazes estas contas à mão. Aqui a IA lê o relatório, faz as contas e escreve o e-mail. Tu confirmas.",
+          passos: [
+            { texto: "Junta o relatório e pede à IA como correu a semana: o custo contra o previsto, os produtos acima do previsto e porquê.", juntar: "dconsumo", exemplo: 0 },
+            { texto: "Confere no Excel: faz a média da coluna «% do previsto». Dá o mesmo que a IA? Qual está certo?", abrir: "dconsumo" },
+            { texto: "Pede o e-mail de 5 linhas para o teu chefe.", exemplo: 1 },
+          ],
+          pedidos: [
+            { texto: "Sou supervisor na Direcção de Logística e Património e controlo os consumíveis de limpeza de um edifício de escritórios. Em anexo está o relatório de consumo da semana de 16 a 20/11; a meta está na folha LEIA-ME. Diz-me o custo consumido contra o previsto, em Kz e em %, por zona e no total, e mostra a conta. Depois diz-me que produtos ficaram acima do previsto e o que explica isso (vê a folha Consumo_por_dia). Responde curto, com uma tabela.", anexar: ["dconsumo"] },
+            { texto: "Escreve o e-mail para o meu chefe, na Direcção de Logística e Património, no máximo 5 linhas: quanto gastámos contra o previsto, em que produtos, a causa e o que proponho para as próximas semanas." },
+          ],
+          abrir: ["dconsumo"],
+          entrega: "Cola aqui o e-mail para o teu chefe.",
+        },
+        ex2: {
+          titulo: "Os alertas de reposição",
+          texto: "É segunda-feira, 23/11, 08h00. Antes de fazeres as encomendas, dá à IA o stock de hoje e as regras de reposição, e pede-lhe os alertas.",
+          diferenca: "À mão vês se cada produto está abaixo do mínimo. A IA cruza o stock com o consumo e o prazo de entrega e vê o que ninguém vê: o que acaba antes de a encomenda chegar.",
+          passos: [
+            { texto: "Junta o relatório e pede a lista de alertas: que produtos, que alerta e quantos dias de stock ainda tens.", juntar: "dstock", exemplo: 0 },
+            { texto: "Procura na resposta: há produtos acima do mínimo que acabam antes de a encomenda chegar? Lembra-te do Ex. 1: porque é que o consumo da semana passada foi fora do normal?", abrir: "dstock" },
+            { texto: "Pede a lista das encomendas de hoje, dentro das regras.", exemplo: 1 },
+          ],
+          pedidos: [
+            { texto: "Em anexo está o stock dos consumíveis de limpeza de segunda-feira, 23/11, e as regras de reposição (folha Regras_reposicao). Faz-me a lista de alertas: abaixo do mínimo, acaba antes de chegar e consumo fora do normal. Para cada produto mostra os dias de cobertura e a conta. Uma tabela: produto, alerta, dias de cobertura, prazo de entrega. Do mais grave para o menos grave.", anexar: ["dstock"] },
+            { texto: "Faz a lista das encomendas de hoje, a cumprir as regras: só os produtos com alerta «Abaixo do mínimo» ou «Acaba antes de chegar», quantidade = stock máximo − stock hoje − encomenda em curso, e nada que já venha a caminho. Uma tabela: produto, quantidade, unidade. Diz-me também o que faço com os produtos que acabam antes de a encomenda chegar." },
+          ],
+          abrir: ["dstock"],
+          entrega: "Os 3 alertas mais graves e a lista das encomendas de hoje.",
+        },
+        ex3: {
+          titulo: "O melhor colaborador que não é",
+          texto: "Esta semana só tens tempo para acompanhar de perto 3 colaboradores na ronda. Tens os indicadores da semana por colaborador, com o produto gasto e a higiene e segurança. Quem acompanhas?",
+          diferenca: "Quem olha só para as tarefas feitas, o tempo e o produto gasto escolhe mal. A IA lê as colunas todas de uma vez e mostra o que um número sozinho esconde.",
+          passos: [
+            { texto: "Junta os indicadores e pede o ranking dos colaboradores e quem precisa de atenção, a olhar para todas as colunas.", juntar: "dcolab", exemplo: 0 },
+            { texto: "Confere o 50105 no Excel: faz mais tarefas, é o mais rápido e o que gasta menos produto. É mesmo o melhor? O que diz a IA?", abrir: "dcolab" },
+            { texto: "Pede para separar formação de comportamento e escolhe os 3 que vais acompanhar.", exemplo: 1 },
+          ],
+          pedidos: [
+            { texto: "Em anexo estão os indicadores por colaborador da equipa de limpeza, semana de 16 a 20/11. Faz o ranking dos 9 colaboradores e diz-me quem precisa de atenção. Olha para todas as colunas, não só para as tarefas feitas e o tempo por tarefa: também o produto gasto por tarefa, as falhas de EPI e o piso molhado sem sinalização. Compara com a referência da equipa (folha LEIA-ME). Tabela curta: colaborador, o que se vê, porque preocupa.", anexar: ["dcolab"] },
+            { texto: "Para os colaboradores que precisam de atenção, separa: é falta de formação ou é comportamento? Tem em conta quem está em integração e os riscos de higiene e segurança. Escolhe 3 para eu acompanhar na ronda, por ordem, e diz-me o que devo verificar com cada um." },
+          ],
+          abrir: ["dcolab"],
+          entrega: "Os 3 colaboradores, o que vais verificar com cada um e quem acompanhas primeiro.",
+        },
+        aovivo: {
+          texto: "Até aqui deste ficheiros à IA. Agora vê com o grupo a IA a ir buscar os dados sozinha à GoContact da operação TAAG. Imagina o mesmo para a tua área: o stock, o consumo e a equipa em tempo real.",
+        },
+        compromisso: {
+          campos: [
+            { id: "oque", rotulo: "O que vou fazer", exemplo: "Todas as segundas-feiras, antes de fazer as encomendas, pedir à IA o consumo da semana contra o previsto e os alertas de reposição, e conferir as contas no Excel." },
+            { id: "quando", rotulo: "Até quando", exemplo: "Todas as segundas-feiras, durante as próximas 4 semanas." },
+            { id: "evidencia", rotulo: "Como vou mostrar que fiz", exemplo: "Guardo a resposta da IA de cada segunda-feira e marco o que confirmei no Excel e o que encomendei." },
           ],
         },
       },
